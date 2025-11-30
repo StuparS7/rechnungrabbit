@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rechnung Erstellen - RechnungRabbit</title>
+    <style>
+        /* Stiluri generale și pentru navbar, copiate pentru consistență */
+        body {font-family: system-ui, sans-serif; background: linear-gradient(#f0f9ff, #ffffff); margin:0; padding:0; min-height: 100vh;}
+        .navbar { background-color: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); padding: 1rem 2rem; border-bottom: 1px solid #e5e7eb; display: flex; align-items: center; position: sticky; top: 0; z-index: 10;}
+        .nav-brand { font-size: 1.5rem; font-weight: bold; color: #1e40af; text-decoration: none; }
+        .nav-links { display: flex; gap: 1.5rem; margin-left: 2rem; }
+        .nav-links a { text-decoration: none; color: #475569; font-weight: 500; font-size: 1rem; }
+        .login-btn { background-color: #3b82f6; color: white; padding: 0.5rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 500; margin-left: auto; }
+        .container {max-width: 1000px; margin: 0 auto; padding: 2rem; }
+        h1 {font-size: 3rem; color: #1e40af; margin: 2rem 0 2.5rem; text-align: center;}
+        
+        /* Stiluri specifice pentru formular */
+        form { background-color: white; padding: 2rem; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        h3 { font-size: 1.25rem; color: #1e40af; border-bottom: 2px solid #e5e7eb; padding-bottom: 0.5rem; margin-top: 1.5rem; margin-bottom: 1.5rem; }
+        label { display: block; font-weight: 500; color: #475569; margin-bottom: 0.5rem; }
+        input[type="text"], input[type="date"], input[type="number"], textarea {
+            width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 8px;
+            font-size: 1rem; box-sizing: border-box; margin-bottom: 1rem;
+        }
+        input[type="file"] {
+            width: 100%; padding: 0.6rem; border: 1px solid #d1d5db; border-radius: 8px;
+            font-size: 0.9rem; box-sizing: border-box; margin-bottom: 1rem;
+        }
+        input:disabled { background-color: #f3f4f6; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .line-item { display: grid; grid-template-columns: 4fr 1fr 1fr 1fr 0.2fr; gap: 1rem; align-items: center; margin-bottom: 1rem; }
+        .line-item-header { font-weight: bold; color: #475569; font-size: 0.9rem; margin-bottom: 0.5rem; padding: 0 0.5rem; }
+        .form-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem;
+            border-bottom: 1px solid #e5e7eb; padding-bottom: 1.5rem;
+        }
+        .line-item input { margin-bottom: 0; }
+        #add-item-btn {
+            background: #e0e7ff; color: #1e40af; border: 1px dashed #c7d2fe;
+            padding: 0.75rem; border-radius: 8px; cursor: pointer; text-align: center;
+            font-weight: 500; margin-bottom: 2rem;
+        }
+        .totals-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 2rem;
+        }
+        .totals {
+            margin-left: auto; width: 300px;
+        }
+        .totals .total-row { display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 1.1rem; }
+        .totals .total-row.grand-total { font-weight: bold; font-size: 1.3rem; color: #1e40af; border-top: 2px solid #e5e7eb; padding-top: 0.5rem; margin-top: 0.5rem;}
+        .remove-item-btn {
+            background: none; border: none; color: #ef4444; font-size: 1.5rem; cursor: pointer;
+            padding: 0; line-height: 1;
+        }
+        button[type="submit"] {
+            display: block; width: 100%; background: #22c55e; color: white; 
+            padding: 1rem; font-size: 1.2rem; border-radius: 12px; text-decoration: none; 
+            font-weight: bold; border: none; cursor: pointer; margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <a href="/" class="nav-brand">RechnungRabbit</a>
+        <nav class="nav-links">
+            <a href="/#funktionen">Funktionen</a>
+            <a href="/preise">Preise</a>
+            <a href="/rechnung-erstellen">Rechnung Erstellen</a>
+            <a href="/#kontakt">Kontakt</a>
+        </nav>
+        <a href="/login" class="login-btn">Login</a>
+    </header>
+
+    <div class="container">
+        <h1>Neue Rechnung erstellen</h1>
+        
+        <form action="/rechnung-erstellen" method="post" enctype="multipart/form-data">
+            <div class="form-grid">
+                <div style="padding-right: 2.5rem; border-right: 1px solid #e5e7eb;">
+                    <h3>Rechnungssteller (Ihre Daten)</h3>
+                    <label for="logo">Firmenlogo (optional):</label>
+                    <input type="file" id="logo" name="logo" accept="image/*">
+
+                    <label for="sender_name">Name / Firma:</label>
+                    <input type="text" id="sender_name" name="sender_name" placeholder="Ihre Firma GmbH">
+                    <label for="sender_address">Straße und Hausnummer:</label>
+                    <input type="text" id="sender_address" name="sender_address" placeholder="Musterstraße 123">
+                    <div class="form-row">
+                        <div>
+                            <label for="sender_zip">PLZ:</label>
+                            <input type="text" id="sender_zip" name="sender_zip" placeholder="12345">
+                        </div>
+                        <div>
+                            <label for="sender_city">Ort:</label>
+                            <input type="text" id="sender_city" name="sender_city" placeholder="Musterstadt">
+                        </div>
+                    </div>
+                    <label for="sender_tax_id">Steuernummer / USt-IdNr.:</label>
+                    <input type="text" id="sender_tax_id" name="sender_tax_id" placeholder="DE123456789">
+                </div>
+                <div>
+                    <h3>Rechnungsempfänger (Kundendaten)</h3>
+                    <label for="receiver_name">Name / Firma des Kunden:</label>
+                    <input type="text" id="receiver_name" name="receiver_name" placeholder="Kundenfirma AG">
+                    <label for="receiver_address">Straße und Hausnummer:</label>
+                    <input type="text" id="receiver_address" name="receiver_address" placeholder="Kundenstraße 45">
+                    <div class="form-row">
+                        <div>
+                            <label for="receiver_zip">PLZ:</label>
+                            <input type="text" id="receiver_zip" name="receiver_zip" placeholder="54321">
+                        </div>
+                        <div>
+                            <label for="receiver_city">Ort:</label>
+                            <input type="text" id="receiver_city" name="receiver_city" placeholder="Kundenstadt">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Rechnungsdetails</h3>
+            <div class="form-row">
+                <div>
+                    <label for="invoice_number">Rechnungsnummer:</label>
+                    <input type="text" id="invoice_number" name="invoice_number" placeholder="RE-2025-001">
+                </div>
+                <div>
+                    <label for="invoice_date">Rechnungsdatum:</label>
+                    <input type="date" id="invoice_date" name="invoice_date">
+                </div>
+            </div>
+            <div class="form-row">
+                <div>
+                    <label for="delivery_date">Liefer-/Leistungsdatum:</label>
+                    <input type="date" id="delivery_date" name="delivery_date">
+                </div>
+                <div>
+                    <label for="due_date">Fälligkeitsdatum:</label>
+                    <input type="date" id="due_date" name="due_date">
+                </div>
+            </div>
+            <div>
+                <label for="pdf_filename">Dateiname für PDF (optional):</label>
+                <input type="text" id="pdf_filename" name="pdf_filename" placeholder="z.B. rechnung-kunde-xyz-mai">
+            </div>
+
+            <h3>Rechnungspositionen</h3>
+            <div class="line-item line-item-header">
+                <div>Beschreibung</div>
+                <div>Menge</div>
+                <div>Einzelpreis (€)</div>
+                <div>Gesamt (€)</div>
+                <div></div>
+            </div>
+            <div id="line-items-container">
+                <!-- Line items will be added here by JavaScript -->
+            </div>
+            <div id="add-item-btn" role="button">Position hinzufügen +</div>
+
+            <div class="totals-grid">
+                <div>
+                    <label for="notes">Anmerkungen / Zahlungsbedingungen:</label>
+                    <textarea id="notes" name="notes" rows="4" placeholder="Zahlbar innerhalb von 14 Tagen ohne Abzug."></textarea>
+                </div>
+                <div class="totals">
+                    <div class="total-row">
+                        <span>Netto</span>
+                        <span id="total-net">0.00 €</span>
+                    </div>
+                    <div class="total-row">
+                        <span>Umsatzsteuer (19%)</span>
+                        <span id="total-vat">0.00 €</span>
+                    </div>
+                    <div class="total-row grand-total">
+                        <span>Gesamtbetrag (Brutto)</span>
+                        <span id="total-gross">0.00 €</span>
+                    </div>
+                </div>
+            </div>
+            
+            <button type="submit">Rechnung generieren & Herunterladen</button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.getElementById('line-items-container');
+            const addButton = document.getElementById('add-item-btn');
+            let itemIndex = 0;
+
+            function addLineItem() {
+                const index = itemIndex++;
+                const itemHtml = `
+                    <div class="line-item" data-index="${index}">
+                        <input type="text" name="items[${index}][description]" placeholder="Produkt / Dienstleistung">
+                        <input type="number" name="items[${index}][quantity]" value="1" min="0" step="any" class="quantity">
+                        <input type="number" name="items[${index}][unit_price]" placeholder="0.00" min="0" step="0.01" class="unit-price">
+                        <input type="text" name="items[${index}][total]" class="line-total" placeholder="0.00" disabled>
+                        <button type="button" class="remove-item-btn">&times;</button>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', itemHtml);
+            }
+
+            function updateTotals() {
+                let netTotal = 0;
+                container.querySelectorAll('.line-item').forEach(item => {
+                    const quantity = parseFloat(item.querySelector('.quantity').value) || 0;
+                    const unitPrice = parseFloat(item.querySelector('.unit-price').value) || 0;
+                    const lineTotal = quantity * unitPrice;
+                    item.querySelector('.line-total').value = lineTotal.toFixed(2);
+                    netTotal += lineTotal;
+                });
+
+                const vat = netTotal * 0.19;
+                const grossTotal = netTotal + vat;
+
+                document.getElementById('total-net').textContent = netTotal.toFixed(2) + ' €';
+                document.getElementById('total-vat').textContent = vat.toFixed(2) + ' €';
+                document.getElementById('total-gross').textContent = grossTotal.toFixed(2) + ' €';
+            }
+
+            container.addEventListener('input', function(e) {
+                if (e.target.classList.contains('quantity') || e.target.classList.contains('unit-price')) {
+                    updateTotals();
+                }
+            });
+
+            container.addEventListener('click', function(e) {
+                if (e.target.classList.contains('remove-item-btn')) {
+                    e.target.closest('.line-item').remove();
+                    updateTotals();
+                }
+            });
+
+            addButton.addEventListener('click', addLineItem);
+
+            // Add one item to start with
+            addLineItem();
+        });
+    </script>
+
+</body>
+</html>

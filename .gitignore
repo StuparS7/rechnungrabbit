@@ -1,0 +1,20 @@
+# Folderul mediului virtual
+.venv/
+venv/
+
+# Fișiere cache Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Fișiere de configurare ale editorului
+.vscode/
+.idea/
+
+# Fișiere specifice sistemului de operare
+.DS_Store
+Thumbs.db
+
+# Fișiere de log
+*.log
