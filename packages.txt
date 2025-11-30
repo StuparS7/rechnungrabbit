@@ -3,3 +3,4 @@ cairo
 gdk-pixbuf
 libffi
 fontconfig
+fonts-liberation
