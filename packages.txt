@@ -2,3 +2,4 @@ pango
 cairo
 gdk-pixbuf
 libffi
+fontconfig
