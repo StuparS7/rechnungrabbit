@@ -2,6 +2,7 @@ from fastapi import FastAPI, Request, Form, UploadFile, File
 from fastapi.responses import HTMLResponse, Response
 from fastapi.templating import Jinja2Templates
 from weasyprint import HTML
+import os
 import re
 from typing import Annotated, Optional
 import json
@@ -9,7 +10,10 @@ import base64
 
 app = FastAPI()
 
-templates = Jinja2Templates(directory="app/templates")
+# Construim o cale absolută către folderul de șabloane
+# Acest lucru este esențial pentru a funcționa pe Vercel
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
 
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
