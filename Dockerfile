@@ -23,4 +23,4 @@ COPY . .
 # Comanda pentru a porni serverul Uvicorn
 # Ascultă pe 0.0.0.0 pentru a fi accesibil din afara containerului
 # Folosește variabila de mediu $PORT furnizată de Vercel
-CMD ["uvicorn", "api.index:app", "--host", "0.0.0.0", "--port", "$PORT"]
+CMD uvicorn index:app --host 0.0.0.0 --port $PORT
