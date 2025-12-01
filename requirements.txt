@@ -1,6 +1,5 @@
-fastapi
-uvicorn
-jinja2
-weasyprint
-factur-x
-python-multipart
+fastapi==0.104.1
+uvicorn==0.24.0
+jinja2==3.1.2
+weasyprint==59.0
+python-multipart==0.0.6
