@@ -13,16 +13,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Copiază fișierele de dependențe și instalează pachetele Python
+# Acest pas se face separat pentru a beneficia de cache-ul Docker
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copiază tot restul codului aplicației în container
 COPY . .
 
-# Expune portul pe care Vercel îl va folosi
-EXPOSE $PORT
-
 # Comanda pentru a porni serverul Uvicorn
 # Ascultă pe 0.0.0.0 pentru a fi accesibil din afara containerului
 # Folosește variabila de mediu $PORT furnizată de Vercel
-CMD uvicorn api.index:app --host 0.0.0.0 --port $PORT
+CMD ["uvicorn", "api.index:app", "--host", "0.0.0.0", "--port", "$PORT"]

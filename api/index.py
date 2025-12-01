@@ -13,9 +13,8 @@ app = FastAPI()
 # Construiește o cale absolută către directorul de șabloane
 # Path(__file__) -> api/index.py
 # .parent -> api/
-# .parent -> rădăcina proiectului
-# / "app" / "templates" -> calea corectă către șabloane
-templates = Jinja2Templates(directory=Path(__file__).parent.parent / "app" / "templates")
+# .parent -> rădăcina proiectului (unde se află acum 'templates')
+templates = Jinja2Templates(directory=Path(__file__).parent.parent / "templates")
 
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
