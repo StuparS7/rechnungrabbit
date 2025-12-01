@@ -5,7 +5,7 @@
       "src": "app/main.py",
       "use": "@vercel/python",
       "config": {
-        "prelude": "build.sh"
+        "prelude": "bash build.sh"
       }
     }
   ],
