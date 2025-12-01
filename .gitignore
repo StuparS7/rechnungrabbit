@@ -1,20 +1,31 @@
-# Folderul mediului virtual
-.venv/
-venv/
-
-# Fișiere cache Python
+# Byte-compiled / optimized / DLL files
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
+*.py[cod]
+*$py.class
 
-# Fișiere de configurare ale editorului
-.vscode/
-.idea/
+# C extensions
+*.so
 
-# Fișiere specifice sistemului de operare
-.DS_Store
-Thumbs.db
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
 
-# Fișiere de log
-*.log
+# Virtual environment
+venv/
+.venv/
+*
+!.gitignore
