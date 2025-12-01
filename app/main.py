@@ -6,10 +6,15 @@ import re
 from typing import Annotated, Optional
 import json
 import base64
+from pathlib import Path
 
 app = FastAPI()
 
-templates = Jinja2Templates(directory="app/templates")
+# Construiește o cale absolută către directorul de șabloane
+# Path(__file__) -> calea către fișierul curent (main.py)
+# .parent -> directorul părintelui (app/)
+# / "templates" -> adaugă directorul templates la cale
+templates = Jinja2Templates(directory=Path(__file__).parent / "templates")
 
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
