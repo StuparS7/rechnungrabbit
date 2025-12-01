@@ -13,7 +13,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Copiază fișierele de dependențe și instalează pachetele Python
-# Acest pas se face separat pentru a beneficia de cache-ul Docker
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
