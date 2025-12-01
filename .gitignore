@@ -27,5 +27,3 @@ wheels/
 # Virtual environment
 venv/
 .venv/
-*
-!.gitignore
