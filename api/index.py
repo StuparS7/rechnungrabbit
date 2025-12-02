@@ -30,12 +30,30 @@ async def rechnung_erstellen_get(request: Request):
 
 @app.post("/rechnung-erstellen")
 async def rechnung_erstellen_post(
-    request: Request, 
-    logo: Annotated[Optional[UploadFile], File()] = None
+    request: Request,
+    # Date Rechnungssteller
+    sender_name: Annotated[str, Form()],
+    sender_address: Annotated[str, Form()],
+    sender_zip: Annotated[str, Form()],
+    sender_city: Annotated[str, Form()],
+    sender_tax_id: Annotated[str, Form()],
+    # Date Rechnungsempfänger
+    receiver_name: Annotated[str, Form()],
+    receiver_address: Annotated[str, Form()],
+    receiver_zip: Annotated[str, Form()],
+    receiver_city: Annotated[str, Form()],
+    # Rechnungsdetails
+    invoice_number: Annotated[str, Form()],
+    invoice_date: Annotated[str, Form()],
+    delivery_date: Annotated[str, Form()],
+    due_date: Annotated[str, Form()],
+    # Alte câmpuri
+    pdf_filename: Annotated[Optional[str], Form()] = "",
+    notes: Annotated[Optional[str], Form()] = "",
+    logo: Annotated[Optional[UploadFile], File()] = None,
 ):
     form_data = await request.form()
 
-    # Procesarea logo-ului
     logo_data_url = None
     # Verificăm dacă este un fișier încărcat (are un nume de fișier)
     if logo and logo.filename:
