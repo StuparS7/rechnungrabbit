@@ -4,8 +4,8 @@ FROM busybox:latest
 # Setează directorul de lucru
 WORKDIR /app
 
-# Creează un fișier de test
-RUN echo "Testul functioneaza!" > index.html
+# Copiază fișierele aplicației (HTML, CSS, JS, etc.) în directorul de lucru din container
+COPY . .
 
 # Pornește un server web simplu care servește fișierele din directorul curent
 # pe portul 8000
