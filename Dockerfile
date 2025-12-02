@@ -22,10 +22,12 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copiază restul codului sursă al aplicației
 COPY . .
 
-# Expune portul pe care va rula aplicația. Vercel va folosi variabila PORT.
-# Setăm un default pentru rulare locală.
-ENV PORT 8000
+# Copiază scriptul de pornire și îl face executabil
+COPY start.sh .
+RUN chmod +x ./start.sh
+
+# Expune portul pe care va rula aplicația
 EXPOSE 8000
 
-# Comanda pentru a porni serverul Uvicorn, folosind 'exec' pentru o gestionare corectă a procesului
-CMD exec uvicorn index:app --host 0.0.0.0 --port ${PORT}
+# Comanda pentru a porni aplicația folosind scriptul
+CMD ["./start.sh"]
