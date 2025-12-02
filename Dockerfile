@@ -17,9 +17,8 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copiază tot restul codului aplicației în container
-COPY . . 
+COPY . .
 
-# Comanda pentru a porni serverul Uvicorn
-# Ascultă pe 0.0.0.0 pentru a fi accesibil din afara containerului
+# Comanda pentru a porni serverul Uvicorn. Ascultă pe 0.0.0.0 pentru a fi accesibil din afara containerului
 # Folosește variabila de mediu $PORT furnizată de Vercel
 CMD uvicorn index:app --host 0.0.0.0 --port $PORT
