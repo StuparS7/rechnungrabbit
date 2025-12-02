@@ -17,7 +17,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copiază tot restul codului aplicației în container
-COPY . .
+COPY . . 
 
 # Comanda pentru a porni serverul Uvicorn
 # Ascultă pe 0.0.0.0 pentru a fi accesibil din afara containerului
