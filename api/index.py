@@ -31,7 +31,6 @@ async def rechnung_erstellen_get(request: Request):
 @app.post("/rechnung-erstellen")
 async def rechnung_erstellen_post(
     request: Request,
-    # Date Rechnungssteller
     sender_name: Annotated[str, Form()],
     sender_address: Annotated[str, Form()],
     sender_zip: Annotated[str, Form()],
@@ -47,13 +46,13 @@ async def rechnung_erstellen_post(
     invoice_date: Annotated[str, Form()],
     delivery_date: Annotated[str, Form()],
     due_date: Annotated[str, Form()],
-    # Alte câmpuri
+    # Câmpuri opționale
     pdf_filename: Annotated[Optional[str], Form()] = "",
     notes: Annotated[Optional[str], Form()] = "",
     logo: Annotated[Optional[UploadFile], File()] = None,
+    # Câmpurile pentru itemi (vor fi procesate manual din request.form())
 ):
-    form_data = await request.form()
-
+    # Procesarea logo-ului
     logo_data_url = None
     # Verificăm dacă este un fișier încărcat (are un nume de fișier)
     if logo and logo.filename:
@@ -69,27 +68,34 @@ async def rechnung_erstellen_post(
         except Exception as e:
             print(f"Error processing logo: {e}")
 
+    # Construim structura de date direct din parametrii primiți
     invoice_data = {
-        "supplier": {},
-        "customer": {},
-        "invoice_details": {},
+        "supplier": {
+            "name": sender_name, "address": sender_address, "zip": sender_zip,
+            "city": sender_city, "tax_id": sender_tax_id
+        },
+        "customer": {
+            "name": receiver_name, "address": receiver_address, "zip": receiver_zip,
+            "city": receiver_city
+        },
+        "invoice_details": {
+            "invoice_number": invoice_number, "invoice_date": invoice_date,
+            "delivery_date": delivery_date, "due_date": due_date,
+            "pdf_filename": pdf_filename, "notes": notes
+        },
         "items": []
     }
- 
+
+    # Procesăm manual doar câmpurile dinamice (line items)
+    form_data = await request.form()
     items_dict = {}
     for key, value in form_data.items():
-        # Sarim peste câmpul 'logo' deoarece este un fișier, nu text, și a fost deja procesat
-        if key == 'logo':
-            continue
-
-        # Ne asigurăm că aplicăm .strip() doar pe string-uri
-        # Câmpurile goale pot fi interpretate diferit în formularele multipart
-        clean_value = value.strip() if isinstance(value, str) else value
-
         match = re.match(r"items\[(\d+)\]\[(\w+)\]", key)
         if match:
             index, field = match.groups()
             index = int(index)
+
+            clean_value = value.strip() if isinstance(value, str) else value
 
             if index not in items_dict:
                 items_dict[index] = {}
@@ -98,14 +104,6 @@ async def rechnung_erstellen_post(
                 items_dict[index][field] = '0'
             else:
                 items_dict[index][field] = clean_value if clean_value else ''
-
-        elif key.startswith("sender_"):
-            invoice_data["supplier"][key.replace("sender_", "")] = clean_value
-        elif key.startswith("receiver_"):
-            invoice_data["customer"][key.replace("receiver_", "")] = clean_value
-        else:
-            invoice_data["invoice_details"][key] = clean_value
-
     invoice_data["items"] = [items_dict[i] for i in sorted(items_dict.keys())]
 
     print("="*50)
